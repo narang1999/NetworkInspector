@@ -202,8 +202,8 @@ inline fun <T> trackRequest(
     params: Map<String, String>? = null,
     headers: Map<String, String>? = null,
     body: Any? = null,
-    onSuccess: (Int, T?) -> Unit,
-    onFailure: (Int, Any?) -> Unit
+    crossinline onSuccess: (Int, T?) -> Unit,
+    crossinline onFailure: (Int, Any?) -> Unit
 ): Pair<(Int, T?, Map<String, String>?) -> Unit, (Int, Any?) -> Unit> {
     val interceptor = CallbackInterceptor.create<T>(url, method, params, headers, body)
     

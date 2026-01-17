@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- NetworkInspector Color Palette -->
+    
+    <!-- Background colors -->
+    <color name="ni_background">#121212</color>
+    <color name="ni_surface">#1E1E1E</color>
+    <color name="ni_surface_variant">#2D2D2D</color>
+    
+    <!-- Text colors -->
+    <color name="ni_text_primary">#FFFFFF</color>
+    <color name="ni_text_secondary">#9E9E9E</color>
+    
+    <!-- Accent colors -->
+    <color name="ni_accent">#6200EE</color>
+    <color name="ni_accent_variant">#BB86FC</color>
+    
+    <!-- Status colors -->
+    <color name="ni_success">#4CAF50</color>
+    <color name="ni_error">#F44336</color>
+    <color name="ni_warning">#FFC107</color>
+    <color name="ni_info">#2196F3</color>
+    
+    <!-- Divider -->
+    <color name="ni_divider">#3D3D3D</color>
+</resources>
+

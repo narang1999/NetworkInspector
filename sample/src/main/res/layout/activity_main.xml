@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="24dp"
+    android:gravity="center"
+    tools:context=".MainActivity">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="NetworkInspector Sample"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        android:layout_marginBottom="32dp" />
+
+    <Button
+        android:id="@+id/btnGetRequest"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Make GET Request"
+        android:layout_marginBottom="8dp" />
+
+    <Button
+        android:id="@+id/btnPostRequest"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Make POST Request"
+        android:layout_marginBottom="8dp" />
+
+    <Button
+        android:id="@+id/btnFailedRequest"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Make Failed Request (500)"
+        android:layout_marginBottom="8dp" />
+
+    <Button
+        android:id="@+id/btnMultipleRequests"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Make 5 Requests"
+        android:layout_marginBottom="24dp" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#CCCCCC"
+        android:layout_marginVertical="16dp" />
+
+    <Button
+        android:id="@+id/btnOpenInspector"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Open Network Inspector"
+        android:layout_marginBottom="8dp"
+        style="@style/Widget.MaterialComponents.Button.OutlinedButton" />
+
+    <Button
+        android:id="@+id/btnClearAll"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Clear All Requests"
+        style="@style/Widget.MaterialComponents.Button.TextButton" />
+
+</LinearLayout>
+

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">NetworkInspector</string>
+    <string name="ni_title">Network Inspector</string>
+    <string name="ni_search_hint">Search requests...</string>
+    <string name="ni_empty">No network requests yet</string>
+    <string name="ni_clear">Clear All</string>
+    <string name="ni_clear_confirm_title">Clear All Requests</string>
+    <string name="ni_clear_confirm_message">Are you sure you want to clear all recorded requests?</string>
+    <string name="ni_copy">Copy</string>
+    <string name="ni_share">Share</string>
+    <string name="ni_copy_curl">Copy as cURL</string>
+    <string name="ni_copied">Copied to clipboard</string>
+</resources>
+

@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:padding="12dp"
+    android:background="?attr/selectableItemBackground">
+
+    <!-- Method Badge -->
+    <TextView
+        android:id="@+id/tvMethod"
+        android:layout_width="48dp"
+        android:layout_height="wrap_content"
+        android:textColor="@color/ni_success"
+        android:textSize="11sp"
+        android:textStyle="bold"
+        android:gravity="center"
+        tools:text="POST" />
+
+    <!-- URL and Time -->
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:orientation="vertical"
+        android:layout_marginStart="8dp">
+
+        <TextView
+            android:id="@+id/tvUrl"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/ni_text_primary"
+            android:textSize="13sp"
+            android:ellipsize="end"
+            android:maxLines="1"
+            tools:text="/api/v1/users/profile" />
+
+        <TextView
+            android:id="@+id/tvTime"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/ni_text_secondary"
+            android:textSize="11sp"
+            android:layout_marginTop="2dp"
+            tools:text="14:32:15.234" />
+
+    </LinearLayout>
+
+    <!-- Status and Duration -->
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:gravity="end"
+        android:layout_marginStart="8dp">
+
+        <TextView
+            android:id="@+id/tvStatus"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/ni_success"
+            android:textSize="12sp"
+            android:textStyle="bold"
+            tools:text="200" />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="2dp">
+
+            <TextView
+                android:id="@+id/tvDuration"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/ni_text_secondary"
+                android:textSize="10sp"
+                tools:text="234ms" />
+
+            <TextView
+                android:id="@+id/tvSize"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/ni_text_secondary"
+                android:textSize="10sp"
+                android:layout_marginStart="8dp"
+                tools:text="12.4 KB" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</LinearLayout>
+

@@ -1,0 +1,49 @@
+// Top-level build file for NetworkInspector library
+buildscript {
+    ext.kotlin_version = '1.9.22'
+    ext.gradle_version = '8.2.2'
+    
+    repositories {
+        google()
+        mavenCentral()
+    }
+    
+    dependencies {
+        classpath "com.android.tools.build:gradle:$gradle_version"
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+    }
+}
+
+allprojects {
+    group = 'com.github.networkinspector'
+    version = '1.0.0'
+}
+
+tasks.register('clean', Delete) {
+    delete rootProject.buildDir
+}
+
+// Common versions
+ext {
+    minSdk = 21
+    targetSdk = 34
+    compileSdk = 34
+    
+    // AndroidX
+    coreKtxVersion = '1.12.0'
+    appCompatVersion = '1.6.1'
+    materialVersion = '1.11.0'
+    constraintLayoutVersion = '2.1.4'
+    recyclerViewVersion = '1.3.2'
+    
+    // Coroutines
+    coroutinesVersion = '1.7.3'
+    
+    // Lifecycle
+    lifecycleVersion = '2.7.0'
+    activityKtxVersion = '1.8.2'
+    
+    // Gson
+    gsonVersion = '2.10.1'
+}
+

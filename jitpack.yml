@@ -1,0 +1,7 @@
+jdk:
+  - openjdk17
+before_install:
+  - chmod +x gradlew
+install:
+  - ./gradlew :networkinspector:publishToMavenLocal :networkinspector-noop:publishToMavenLocal
+

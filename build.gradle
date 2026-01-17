@@ -16,7 +16,7 @@ buildscript {
 
 allprojects {
     group = 'com.github.networkinspector'
-    version = '1.2.2'
+    version = '1.2.3'
 }
 
 tasks.register('clean', Delete) {

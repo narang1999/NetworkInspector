@@ -3,6 +3,7 @@ package com.networkinspector.sample
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.networkinspector.NetworkInspector
+import com.networkinspector.interceptor.CallbackInterceptor
 import com.networkinspector.sample.databinding.ActivityMainBinding
 import okhttp3.Call
 import okhttp3.Callback
@@ -55,7 +56,8 @@ class MainActivity : AppCompatActivity() {
     private fun makeGetRequest() {
         val url = "https://jsonplaceholder.typicode.com/posts/1"
         
-        val requestId = NetworkInspector.onRequestStart(
+        // Using CallbackInterceptor - cleaner API!
+        val interceptor = CallbackInterceptor.create<String>(
             url = url,
             method = "GET"
         )
@@ -66,16 +68,12 @@ class MainActivity : AppCompatActivity() {
         
         client.newCall(request).enqueue(object : Callback {
             override fun onFailure(call: Call, e: IOException) {
-                NetworkInspector.onRequestFailed(requestId, 0, e)
+                interceptor.onFailure(0, e)
             }
             
             override fun onResponse(call: Call, response: Response) {
                 val body = response.body?.string()
-                NetworkInspector.onRequestSuccess(
-                    requestId = requestId,
-                    responseCode = response.code,
-                    response = body
-                )
+                interceptor.onSuccess(response.code, body)
             }
         })
     }
@@ -84,12 +82,13 @@ class MainActivity : AppCompatActivity() {
         val url = "https://jsonplaceholder.typicode.com/posts"
         val json = """{"title": "Test Post", "body": "This is a test", "userId": 1}"""
         
-        val requestId = NetworkInspector.onRequestStart(
-            url = url,
-            method = "POST",
-            headers = mapOf("Content-Type" to "application/json"),
-            body = json
-        )
+        // Using CallbackInterceptor with builder - even cleaner!
+        val interceptor = CallbackInterceptor.builder<String>()
+            .url(url)
+            .post()
+            .headers(mapOf("Content-Type" to "application/json"))
+            .body(json)  // Body will be auto-formatted for readability
+            .build()
         
         val request = Request.Builder()
             .url(url)
@@ -98,16 +97,12 @@ class MainActivity : AppCompatActivity() {
         
         client.newCall(request).enqueue(object : Callback {
             override fun onFailure(call: Call, e: IOException) {
-                NetworkInspector.onRequestFailed(requestId, 0, e)
+                interceptor.onFailure(0, e)
             }
             
             override fun onResponse(call: Call, response: Response) {
                 val body = response.body?.string()
-                NetworkInspector.onRequestSuccess(
-                    requestId = requestId,
-                    responseCode = response.code,
-                    response = body
-                )
+                interceptor.onSuccess(response.code, body)
             }
         })
     }
@@ -115,7 +110,8 @@ class MainActivity : AppCompatActivity() {
     private fun makeFailedRequest() {
         val url = "https://httpstat.us/500"
         
-        val requestId = NetworkInspector.onRequestStart(
+        // Using CallbackInterceptor
+        val interceptor = CallbackInterceptor.create<String>(
             url = url,
             method = "GET"
         )
@@ -126,14 +122,14 @@ class MainActivity : AppCompatActivity() {
         
         client.newCall(request).enqueue(object : Callback {
             override fun onFailure(call: Call, e: IOException) {
-                NetworkInspector.onRequestFailed(requestId, 0, e)
+                interceptor.onFailure(0, e)
             }
             
             override fun onResponse(call: Call, response: Response) {
                 if (response.isSuccessful) {
-                    NetworkInspector.onRequestSuccess(requestId, response.code, response.body?.string())
+                    interceptor.onSuccess(response.code, response.body?.string())
                 } else {
-                    NetworkInspector.onRequestFailed(requestId, response.code, "HTTP ${response.code}")
+                    interceptor.onFailure(response.code, "HTTP ${response.code}")
                 }
             }
         })

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     
-    <style name="NetworkInspectorTheme" parent="Theme.MaterialComponents.DayNight.DarkActionBar">
+    <style name="NetworkInspectorTheme" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <item name="colorPrimary">@color/ni_accent</item>
         <item name="colorPrimaryVariant">@color/ni_accent_variant</item>
         <item name="colorOnPrimary">@color/ni_text_primary</item>
@@ -15,8 +15,7 @@
         <item name="colorOnError">@color/ni_text_primary</item>
         <item name="android:statusBarColor">@color/ni_surface</item>
         <item name="android:navigationBarColor">@color/ni_background</item>
-        <item name="windowActionBar">false</item>
-        <item name="windowNoTitle">true</item>
+        <item name="android:fitsSystemWindows">true</item>
     </style>
     
 </resources>

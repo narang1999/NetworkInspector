@@ -10,6 +10,7 @@ import com.networkinspector.core.RequestStats
 import com.networkinspector.core.RequestStatus
 import com.networkinspector.notification.InspectorNotificationManager
 import com.networkinspector.ui.RequestListActivity
+import com.networkinspector.util.BodyFormatter
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.CopyOnWriteArrayList
 import java.util.concurrent.atomic.AtomicLong
@@ -134,15 +135,7 @@ object NetworkInspector {
         
         val requestId = "req_${requestIdGenerator.incrementAndGet()}_${System.currentTimeMillis()}"
         
-        val bodyString = when (body) {
-            null -> null
-            is String -> body.take(config.maxBodySize)
-            else -> try { 
-                gson.toJson(body).take(config.maxBodySize) 
-            } catch (e: Exception) { 
-                body.toString().take(config.maxBodySize) 
-            }
-        }
+        val bodyString = BodyFormatter.format(body, config.maxBodySize)
         
         val request = NetworkRequest(
             id = requestId,
@@ -405,16 +398,7 @@ object NetworkInspector {
     }
     
     private fun formatResponse(response: Any?): String? {
-        if (response == null) return null
-        
-        return try {
-            when (response) {
-                is String -> response.take(config.maxBodySize)
-                else -> gson.toJson(response).take(config.maxBodySize)
-            }
-        } catch (e: Exception) {
-            response.toString().take(config.maxBodySize)
-        }
+        return BodyFormatter.format(response, config.maxBodySize)
     }
     
     private fun notifyListeners() {
@@ -436,5 +420,6 @@ object NetworkInspector {
         fun onRequestsUpdated(requests: List<NetworkRequest>, stats: RequestStats)
     }
 }
+
 
 

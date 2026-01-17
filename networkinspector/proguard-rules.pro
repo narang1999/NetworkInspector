@@ -7,3 +7,4 @@
 -keep class com.networkinspector.ui.** { *; }
 
 
+

@@ -6,3 +6,4 @@
 -keep class com.networkinspector.core.** { *; }
 -keep class com.networkinspector.ui.** { *; }
 
+

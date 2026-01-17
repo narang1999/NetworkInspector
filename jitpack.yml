@@ -5,3 +5,4 @@ before_install:
 install:
   - ./gradlew :networkinspector:publishToMavenLocal :networkinspector-noop:publishToMavenLocal
 
+

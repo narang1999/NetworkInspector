@@ -2,6 +2,7 @@
 <resources>
     
     <style name="NetworkInspectorTheme" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <item name="actionMenuTextAppearance">@style/MyMenuTextStyle</item>
         <item name="colorPrimary">@color/ni_accent</item>
         <item name="colorPrimaryVariant">@color/ni_accent_variant</item>
         <item name="colorOnPrimary">@color/ni_text_primary</item>
@@ -17,7 +18,10 @@
         <item name="android:navigationBarColor">@color/ni_background</item>
         <item name="android:fitsSystemWindows">true</item>
     </style>
-    
+    <!-- res/values/styles.xml -->
+    <style name="MyMenuTextStyle">
+        <item name="android:textColor">#FFFFFF</item>
+    </style>
 </resources>
 
 

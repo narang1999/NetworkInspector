@@ -14,7 +14,22 @@
         android:layout_height="?attr/actionBarSize"
         android:background="@color/ni_surface"
         app:titleTextColor="@color/ni_text_primary"
-        app:navigationIconTint="@color/ni_text_primary" />
+        app:navigationIconTint="@color/ni_text_primary">
+
+        <TextView
+            android:id="@+id/tvEvents"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end"
+            android:layout_marginEnd="8dp"
+            android:text="Events"
+            android:textColor="@color/ni_accent_variant"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            android:padding="8dp"
+            android:background="?attr/selectableItemBackgroundBorderless" />
+
+    </com.google.android.material.appbar.MaterialToolbar>
 
     <!-- Search Bar -->
     <LinearLayout

@@ -57,6 +57,11 @@ class RequestListActivity : AppCompatActivity(), NetworkInspector.RequestListene
             setDisplayHomeAsUpEnabled(true)
             title = "Network"
         }
+        
+        // Setup Events button click
+        binding.tvEvents.setOnClickListener {
+            startActivity(AnalyticsListActivity.intent(this))
+        }
     }
     
     private fun setupSearch() {
@@ -152,10 +157,6 @@ class RequestListActivity : AppCompatActivity(), NetworkInspector.RequestListene
         return when (item.itemId) {
             android.R.id.home -> {
                 onBackPressedDispatcher.onBackPressed()
-                true
-            }
-            R.id.action_events -> {
-                startActivity(AnalyticsListActivity.intent(this))
                 true
             }
             R.id.action_clear -> {

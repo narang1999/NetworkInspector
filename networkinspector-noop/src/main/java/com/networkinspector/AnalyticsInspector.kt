@@ -84,5 +84,10 @@ object AnalyticsInspector {
     interface EventListener {
         fun onEventsUpdated(events: List<AnalyticsEvent>)
     }
+    
+    @JvmStatic
+    fun addSampleEvents() {
+        // No-op
+    }
 }
 

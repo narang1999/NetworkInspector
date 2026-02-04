@@ -54,6 +54,12 @@ class AnalyticsListActivity : AppCompatActivity(), AnalyticsInspector.EventListe
             setupRecyclerView()
             
             AnalyticsInspector.addListener(this)
+            
+            // Add sample events if empty (for demo/testing)
+            if (AnalyticsInspector.getEventCount() == 0) {
+                AnalyticsInspector.addSampleEvents()
+            }
+            
             updateList()
         } catch (e: Throwable) {
             finish()

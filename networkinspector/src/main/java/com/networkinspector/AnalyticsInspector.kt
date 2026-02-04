@@ -260,5 +260,82 @@ object AnalyticsInspector {
     interface EventListener {
         fun onEventsUpdated(events: List<AnalyticsEvent>)
     }
+    
+    /**
+     * Add sample/dummy events for testing all analytics sources
+     */
+    @JvmStatic
+    fun addSampleEvents() {
+        try {
+            // Firebase events
+            logEvent("screen_view", mapOf(
+                "screen_name" to "HomeScreen",
+                "screen_class" to "MainActivity"
+            ), AnalyticsSource.FIREBASE)
+            
+            logEvent("select_content", mapOf(
+                "content_type" to "product",
+                "item_id" to "SKU_12345"
+            ), AnalyticsSource.FIREBASE)
+            
+            logEvent("add_to_cart", mapOf(
+                "currency" to "INR",
+                "value" to "1499.00",
+                "items" to "[{item_id: SKU_123}]"
+            ), AnalyticsSource.FIREBASE)
+            
+            // CleverTap events
+            logEvent("Product Viewed", mapOf(
+                "Product ID" to "LENS_001",
+                "Product Name" to "Blue Light Glasses",
+                "Category" to "Eyeglasses",
+                "Price" to "2999"
+            ), AnalyticsSource.CLEVERTAP)
+            
+            logEvent("Charged", mapOf(
+                "Amount" to "4999",
+                "Payment Mode" to "UPI",
+                "Items" to "2"
+            ), AnalyticsSource.CLEVERTAP)
+            
+            // AppsFlyer events
+            logEvent("af_purchase", mapOf(
+                "af_revenue" to "2999.00",
+                "af_currency" to "INR",
+                "af_order_id" to "ORD_789456",
+                "af_content_type" to "eyeglasses"
+            ), AnalyticsSource.APPSFLYER)
+            
+            logEvent("af_add_to_wishlist", mapOf(
+                "af_content_id" to "PROD_456",
+                "af_price" to "1999.00"
+            ), AnalyticsSource.APPSFLYER)
+            
+            // Facebook events
+            logEvent("fb_mobile_add_to_cart", mapOf(
+                "_valueToSum" to "1499.00",
+                "fb_currency" to "INR",
+                "fb_content_type" to "product",
+                "fb_content_id" to "SKU_789"
+            ), AnalyticsSource.FACEBOOK)
+            
+            logEvent("fb_mobile_purchase", mapOf(
+                "_valueToSum" to "5999.00",
+                "fb_currency" to "INR",
+                "fb_num_items" to "3"
+            ), AnalyticsSource.FACEBOOK)
+            
+            // Custom events
+            logEvent("custom_user_action", mapOf(
+                "action" to "filter_applied",
+                "filter_type" to "price_range",
+                "min_value" to "500",
+                "max_value" to "5000"
+            ), AnalyticsSource.CUSTOM)
+            
+        } catch (e: Throwable) {
+            Log.e(TAG, "Error adding sample events", e)
+        }
+    }
 }
 

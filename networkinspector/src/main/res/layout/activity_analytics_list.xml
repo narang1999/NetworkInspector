@@ -13,10 +13,10 @@
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
         android:background="@color/ni_surface"
+        app:title="Analytics Events"
         app:titleTextColor="@color/ni_text_primary"
         app:navigationIconTint="@color/ni_text_primary" />
 
-    <!-- Search Bar -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -31,17 +31,17 @@
             android:layout_weight="1"
             android:background="@drawable/bg_search"
             android:paddingHorizontal="16dp"
-            android:hint="Search requests..."
+            android:hint="Search events..."
             android:textColorHint="@color/ni_text_secondary"
             android:textColor="@color/ni_text_primary"
             android:textSize="14sp"
             android:inputType="text"
             android:imeOptions="actionSearch"
-            android:maxLines="1" />
+            android:maxLines="1"
+            android:singleLine="true" />
 
     </LinearLayout>
 
-    <!-- Filter Chips -->
     <HorizontalScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -63,58 +63,81 @@
                 style="@style/Widget.MaterialComponents.Chip.Filter" />
 
             <com.google.android.material.chip.Chip
-                android:id="@+id/chipSuccess"
+                android:id="@+id/chipFirebase"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Success"
+                android:text="Firebase"
                 style="@style/Widget.MaterialComponents.Chip.Filter" />
 
             <com.google.android.material.chip.Chip
-                android:id="@+id/chipFailed"
+                android:id="@+id/chipClevertap"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Failed"
+                android:text="CleverTap"
                 style="@style/Widget.MaterialComponents.Chip.Filter" />
 
             <com.google.android.material.chip.Chip
-                android:id="@+id/chipInProgress"
+                android:id="@+id/chipAppsflyer"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Active"
+                android:text="AppsFlyer"
+                style="@style/Widget.MaterialComponents.Chip.Filter" />
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/chipFacebook"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Facebook"
                 style="@style/Widget.MaterialComponents.Chip.Filter" />
 
         </LinearLayout>
 
     </HorizontalScrollView>
 
-    <!-- Stats Bar -->
-    <TextView
-        android:id="@+id/tvStats"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:orientation="horizontal"
         android:padding="12dp"
-        android:textColor="@color/ni_text_secondary"
-        android:textSize="12sp"
-        android:background="@color/ni_surface_variant"
-        tools:text="25 total • 1 active • 22 success • 2 failed" />
+        android:background="@color/ni_surface_variant">
 
-    <!-- Request List -->
+        <TextView
+            android:id="@+id/tvEventCount"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:textColor="@color/ni_text_secondary"
+            android:textSize="12sp"
+            tools:text="156 events" />
+
+        <TextView
+            android:id="@+id/tvClear"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="?attr/selectableItemBackground"
+            android:paddingHorizontal="8dp"
+            android:text="Clear All"
+            android:textColor="@color/ni_error"
+            android:textSize="12sp" />
+
+    </LinearLayout>
+
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1">
 
         <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recyclerView"
+            android:id="@+id/rvEvents"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
 
         <TextView
-            android:id="@+id/emptyView"
+            android:id="@+id/tvEmpty"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:gravity="center"
-            android:text="No network requests yet\n\nMake some API calls to see them here"
+            android:text="No analytics events yet\n\nTrigger some events to see them here"
             android:textColor="@color/ni_text_secondary"
             android:textSize="16sp"
             android:textAlignment="center"
@@ -123,7 +146,4 @@
     </FrameLayout>
 
 </LinearLayout>
-
-
-
 

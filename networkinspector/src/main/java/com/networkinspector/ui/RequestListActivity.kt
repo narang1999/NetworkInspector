@@ -55,7 +55,7 @@ class RequestListActivity : AppCompatActivity(), NetworkInspector.RequestListene
         setSupportActionBar(binding.toolbar)
         supportActionBar?.apply {
             setDisplayHomeAsUpEnabled(true)
-            title = "Network Inspector"
+            title = "Network"
         }
     }
     
@@ -154,6 +154,10 @@ class RequestListActivity : AppCompatActivity(), NetworkInspector.RequestListene
                 onBackPressedDispatcher.onBackPressed()
                 true
             }
+            R.id.action_events -> {
+                startActivity(AnalyticsListActivity.intent(this))
+                true
+            }
             R.id.action_clear -> {
                 showClearConfirmation()
                 true
@@ -242,6 +246,7 @@ private class RequestAdapter(
         }
     }
 }
+
 
 
 

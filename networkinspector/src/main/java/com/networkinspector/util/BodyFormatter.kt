@@ -40,8 +40,8 @@ object BodyFormatter {
                 is Collection<*> -> formatCollection(body, maxSize)
                 else -> formatObject(body, maxSize)
             }
-        } catch (e: Exception) {
-            body.toString().take(maxSize)
+        } catch (e: Throwable) {
+            try { body.toString().take(maxSize) } catch (e2: Throwable) { "[Error formatting body]" }
         }
     }
     
@@ -170,8 +170,8 @@ object BodyFormatter {
     private fun formatMap(map: Map<*, *>, maxSize: Int): String {
         return try {
             gson.toJson(map).let { tryFormatJson(it, maxSize) ?: it.take(maxSize) }
-        } catch (e: Exception) {
-            map.toString().take(maxSize)
+        } catch (e: Throwable) {
+            try { map.toString().take(maxSize) } catch (e2: Throwable) { "[Map data]" }
         }
     }
     
@@ -181,8 +181,8 @@ object BodyFormatter {
     private fun formatCollection(collection: Collection<*>, maxSize: Int): String {
         return try {
             gson.toJson(collection).let { tryFormatJson(it, maxSize) ?: it.take(maxSize) }
-        } catch (e: Exception) {
-            collection.toString().take(maxSize)
+        } catch (e: Throwable) {
+            try { collection.toString().take(maxSize) } catch (e2: Throwable) { "[Collection data]" }
         }
     }
     
@@ -193,8 +193,8 @@ object BodyFormatter {
         return try {
             val json = gson.toJson(obj)
             tryFormatJson(json, maxSize) ?: json.take(maxSize)
-        } catch (e: Exception) {
-            obj.toString().take(maxSize)
+        } catch (e: Throwable) {
+            try { obj.toString().take(maxSize) } catch (e2: Throwable) { "[Object data]" }
         }
     }
     
@@ -234,5 +234,7 @@ object BodyFormatter {
         }
     }
 }
+
+
 
 

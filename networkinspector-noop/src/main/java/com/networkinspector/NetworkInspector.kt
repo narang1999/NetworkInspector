@@ -88,6 +88,11 @@ object NetworkInspector {
     fun getLaunchIntent(context: Context): Intent = Intent()
     
     @JvmStatic
+    fun launchAnalytics(context: Context) {
+        // No-op
+    }
+    
+    @JvmStatic
     fun addListener(listener: RequestListener) {
         // No-op
     }
@@ -101,6 +106,7 @@ object NetworkInspector {
         fun onRequestsUpdated(requests: List<NetworkRequest>, stats: RequestStats)
     }
 }
+
 
 
 

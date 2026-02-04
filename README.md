@@ -2,26 +2,28 @@
 
 A lightweight, easy-to-integrate network request inspector for Android. Similar to [Chucker](https://github.com/ChuckerTeam/chucker) but simpler and **HTTP client agnostic** - works with any networking library (Retrofit, Volley, OkHttp, or custom implementations).
 
-![Version](https://img.shields.io/badge/version-1.0.0-blue)
+![Version](https://img.shields.io/badge/version-1.4.0-blue)
 ![Min SDK](https://img.shields.io/badge/minSdk-21-green)
 ![License](https://img.shields.io/badge/license-MIT-orange)
 
 ## Features ✨
 
 - 📱 **Beautiful dark-themed UI** for viewing network requests
+- 📊 **Analytics Inspector** for tracking Firebase, CleverTap, AppsFlyer events
 - 🔔 **Notification** with live request statistics
 - 🔍 **Search and filter** requests by status, URL, or method
 - 📋 **Copy as cURL** for easy debugging
 - 📤 **Share** request details
+- 🛡️ **Crash-safe** - all methods wrapped in try-catch, never crashes your app
 - 🚫 **No-op release artifact** for zero overhead in production
 - 🔌 **HTTP client agnostic** - works with any networking library
 - ☕ **Java & Kotlin** compatible
 
 ## Screenshots
 
-| Request List | Request Detail | Notification |
+| Request List | Request Detail | Analytics Events |
 |:---:|:---:|:---:|
-| ![List](screenshots/list.png) | ![Detail](screenshots/detail.png) | ![Notification](screenshots/notification.png) |
+| ![List](screenshots/list.png) | ![Detail](screenshots/detail.png) | ![Analytics](screenshots/analytics.png) |
 
 ## Installation
 
@@ -42,10 +44,10 @@ Add the dependencies:
 ```groovy
 dependencies {
     // Debug implementation for development
-    debugImplementation 'com.github.YourUsername:NetworkInspector:1.0.0'
+    debugImplementation 'com.github.narang1999:NetworkInspector:networkinspector:1.4.0'
     
     // No-op implementation for release (zero overhead)
-    releaseImplementation 'com.github.YourUsername:NetworkInspector-noop:1.0.0'
+    releaseImplementation 'com.github.narang1999:NetworkInspector:networkinspector-noop:1.4.0'
 }
 ```
 
@@ -93,7 +95,15 @@ class MyApplication : Application() {
 
 ### 2. Track Network Requests
 
-#### In Your Network Layer (Recommended)
+#### Option A: Using OkHttp Interceptor (Recommended)
+
+```kotlin
+val client = OkHttpClient.Builder()
+    .addInterceptor(NetworkInspectorInterceptor())
+    .build()
+```
+
+#### Option B: Manual Tracking
 
 ```kotlin
 // When request starts
@@ -120,91 +130,72 @@ NetworkInspector.onRequestFailed(
 )
 ```
 
-#### With OkHttp Interceptor
+#### Option C: Using CallbackInterceptor (for callback-based APIs)
 
 ```kotlin
-class NetworkInspectorInterceptor : Interceptor {
-    override fun intercept(chain: Interceptor.Chain): Response {
-        val request = chain.request()
-        
-        val requestId = NetworkInspector.onRequestStart(
-            url = request.url.toString(),
-            method = request.method,
-            headers = request.headers.toMap(),
-            body = request.body?.let { bodyToString(it) }
-        )
-        
-        return try {
-            val response = chain.proceed(request)
-            
-            NetworkInspector.onRequestSuccess(
-                requestId = requestId,
-                responseCode = response.code,
-                response = response.peekBody(1024 * 1024).string(),
-                headers = response.headers.toMap()
-            )
-            
-            response
-        } catch (e: Exception) {
-            NetworkInspector.onRequestFailed(requestId, 0, e)
-            throw e
-        }
-    }
+val interceptor = CallbackInterceptor.create<MyResponse>(
+    url = fullUrl,
+    method = "POST",
+    headers = headers,
+    body = requestBody
+)
+
+apiClient.setOnFinishListener { client, code, response ->
+    interceptor.onSuccess(code, response)
 }
 ```
 
-#### With Retrofit/Volley
-
-```java
-// Java example in your base network class
-public void executeRequest(Request request, Callback callback) {
-    String requestId = NetworkInspector.onRequestStart(
-        request.getUrl(),
-        request.getMethod(),
-        null, // params
-        request.getHeaders(),
-        request.getBody(),
-        null  // tag
-    );
-    
-    client.execute(request, new Callback() {
-        @Override
-        public void onSuccess(Response response) {
-            NetworkInspector.onRequestSuccess(
-                requestId,
-                response.getStatusCode(),
-                response.getBody(),
-                null
-            );
-            callback.onSuccess(response);
-        }
-        
-        @Override
-        public void onError(Exception error) {
-            NetworkInspector.onRequestFailed(requestId, 0, error);
-            callback.onError(error);
-        }
-    });
-}
-```
-
-### 3. Open the Inspector UI
+### 3. Track Analytics Events (New in 1.4.0)
 
 ```kotlin
-// Launch from anywhere
+// Log Firebase Analytics events
+AnalyticsInspector.logEvent(
+    eventName = "screen_view",
+    params = bundleOf("screen_name" to "Home"),
+    source = AnalyticsSource.FIREBASE
+)
+
+// Log CleverTap events
+AnalyticsInspector.logEvent(
+    eventName = "product_viewed",
+    params = mapOf("product_id" to "123"),
+    source = AnalyticsSource.CLEVERTAP
+)
+
+// Log AppsFlyer events
+AnalyticsInspector.logEvent(
+    eventName = "purchase",
+    params = mapOf("revenue" to "99.99"),
+    source = AnalyticsSource.APPSFLYER
+)
+```
+
+### 4. Open the Inspector UI
+
+```kotlin
+// Launch Network Inspector
 NetworkInspector.launch(context)
 
-// Or get the intent for custom handling
-val intent = NetworkInspector.getLaunchIntent(context)
-startActivity(intent)
+// Launch Analytics Inspector directly
+AnalyticsInspector.launch(context)
+
+// Or use the "Events" button in Network Inspector toolbar
 ```
 
-### 4. Listen for Updates
+### 5. Listen for Updates
 
 ```kotlin
+// Network updates
 NetworkInspector.addListener(object : NetworkInspector.RequestListener {
     override fun onRequestsUpdated(requests: List<NetworkRequest>, stats: RequestStats) {
         // Update your UI, log stats, etc.
+    }
+})
+
+// Analytics updates
+AnalyticsInspector.addListener(object : AnalyticsInspector.EventListener {
+    override fun onEventsUpdated(events: List<AnalyticsEvent>) {
+        // Handle analytics events
     }
 })
 ```
@@ -241,8 +232,51 @@ NetworkInspector.addListener(object : NetworkInspector.RequestListener {
 | `getStats()` | Get current statistics |
 | `clearAll()` | Clear all recorded requests |
 | `launch(context)` | Open inspector UI |
+| `launchAnalytics(context)` | Open analytics inspector UI |
 | `addListener(listener)` | Add update listener |
 | `removeListener(listener)` | Remove update listener |
+
+### AnalyticsInspector (New in 1.4.0)
+
+| Method | Description |
+|--------|-------------|
+| `logEvent(name, params, source)` | Log an analytics event |
+| `getEvents()` | Get all recorded events |
+| `getEvents(source)` | Get events filtered by source |
+| `searchEvents(query)` | Search events by name or params |
+| `getEvent(id)` | Get specific event by ID |
+| `getEventCount()` | Get total event count |
+| `clearAll()` | Clear all recorded events |
+| `setEnabled(enabled)` | Enable/disable logging |
+| `setLogToLogcat(log)` | Enable/disable logcat output |
+| `launch(context)` | Open analytics inspector UI |
+| `addListener(listener)` | Add update listener |
+| `removeListener(listener)` | Remove update listener |
+
+### Analytics Sources
+
+| Source | Description |
+|--------|-------------|
+| `FIREBASE` | Firebase Analytics |
+| `CLEVERTAP` | CleverTap |
+| `APPSFLYER` | AppsFlyer |
+| `FACEBOOK` | Facebook Analytics |
+| `CUSTOM` | Custom analytics |
+
+## Crash Safety
+
+All public methods in NetworkInspector and AnalyticsInspector are wrapped in try-catch blocks. This ensures:
+
+- ✅ Your app will **never crash** due to inspector failures
+- ✅ Heavy processing runs on background threads to prevent ANRs
+- ✅ Safe to use in any environment
+
+## What's New in 1.4.0
+
+- 📊 **Analytics Inspector** - Track Firebase, CleverTap, AppsFlyer, Facebook analytics events
+- 🔍 **Filter by source** - Filter analytics events by source (Firebase, CleverTap, etc.)
+- 🛡️ **Crash-safe** - All methods wrapped in try-catch, background processing for heavy operations
+- 🎯 **Events button** - Quick access to Analytics Inspector from Network Inspector toolbar
 
 ## License
 
@@ -277,6 +311,3 @@ Contributions are welcome! Please feel free to submit a Pull Request.
 ## Credits
 
 Inspired by [Chucker](https://github.com/ChuckerTeam/chucker) - an HTTP inspector for OkHttp.
-
-
-

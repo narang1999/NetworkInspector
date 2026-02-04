@@ -17,6 +17,19 @@
             android:parentActivityName=".ui.RequestListActivity"
             android:theme="@style/NetworkInspectorTheme" />
 
+        <activity
+            android:name=".ui.AnalyticsListActivity"
+            android:exported="true"
+            android:label="Analytics Events"
+            android:theme="@style/NetworkInspectorTheme" />
+
+        <activity
+            android:name=".ui.AnalyticsDetailActivity"
+            android:exported="false"
+            android:label="Event Details"
+            android:parentActivityName=".ui.AnalyticsListActivity"
+            android:theme="@style/NetworkInspectorTheme" />
+
         <receiver
             android:name=".notification.ClearRequestsReceiver"
             android:exported="false" />

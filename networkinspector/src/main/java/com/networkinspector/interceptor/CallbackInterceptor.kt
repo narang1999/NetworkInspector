@@ -1,5 +1,6 @@
 package com.networkinspector.interceptor
 
+import android.util.Log
 import com.networkinspector.NetworkInspector
 import com.networkinspector.util.BodyFormatter
 
@@ -7,110 +8,15 @@ import com.networkinspector.util.BodyFormatter
  * A callback interceptor that wraps your existing callbacks to automatically
  * track network requests with NetworkInspector.
  * 
- * ## Usage with callback-based APIs:
- * 
- * ### Java:
- * ```java
- * // Create interceptor for your request
- * CallbackInterceptor<MyResponse> interceptor = CallbackInterceptor.create(
- *     fullUrl,
- *     httpMethod,
- *     params,
- *     headers,
- *     requestBody
- * );
- * 
- * // Use in your OnFinishListener
- * apiClient.setOnFinishListener(new OnFinishListener<MyResponse>() {
- *     @Override
- *     public void onSuccess(ApiClient<MyResponse> client, int code, MyResponse response) {
- *         interceptor.onSuccess(code, response, client.getHeaders());
- *         // Your existing success handling
- *     }
- *     
- *     @Override
- *     public void onFailure(ApiClient<MyResponse> client, int code, Object error) {
- *         interceptor.onFailure(code, error);
- *         // Your existing failure handling
- *     }
- * });
- * ```
- * 
- * ### Kotlin:
- * ```kotlin
- * val interceptor = CallbackInterceptor.create<MyResponse>(
- *     url = fullUrl,
- *     method = httpMethod,
- *     params = params,
- *     headers = headers,
- *     body = requestBody
- * )
- * 
- * apiClient.setOnFinishListener { client, code, response ->
- *     interceptor.onSuccess(code, response)
- *     // Your handling
- * }
- * ```
+ * All methods are crash-safe and will never throw exceptions.
  */
 class CallbackInterceptor<T> private constructor(
     private val requestId: String
 ) {
     
-    /**
-     * Call this when the request succeeds
-     * 
-     * @param responseCode HTTP response code
-     * @param response The response object
-     * @param headers Optional response headers
-     */
-    @JvmOverloads
-    fun onSuccess(
-        responseCode: Int = 200,
-        response: T? = null,
-        headers: Map<String, String>? = null
-    ) {
-        NetworkInspector.onRequestSuccess(requestId, responseCode, response, headers)
-    }
-    
-    /**
-     * Call this when the request fails
-     * 
-     * @param responseCode HTTP response code (0 if connection failed)
-     * @param error The error object
-     */
-    @JvmOverloads
-    fun onFailure(
-        responseCode: Int = 0,
-        error: Any? = null
-    ) {
-        NetworkInspector.onRequestFailed(requestId, responseCode, error)
-    }
-    
-    /**
-     * Call this when the request is cancelled
-     */
-    fun onCancelled() {
-        NetworkInspector.onRequestCancelled(requestId)
-    }
-    
-    /**
-     * Get the request ID for manual tracking
-     */
-    fun getRequestId(): String = requestId
-    
     companion object {
+        private const val TAG = "NetworkInspector"
         
-        /**
-         * Create a new callback interceptor and start tracking.
-         * 
-         * @param url Full URL of the request
-         * @param method HTTP method (GET, POST, etc.)
-         * @param params Query parameters (optional)
-         * @param headers Request headers (optional)
-         * @param body Request body - will be auto-formatted (optional)
-         * @param tag Custom tag for categorization (optional)
-         * @return CallbackInterceptor instance to use in your callbacks
-         */
         @JvmStatic
         @JvmOverloads
         fun <T> create(
@@ -121,31 +27,64 @@ class CallbackInterceptor<T> private constructor(
             body: Any? = null,
             tag: String? = null
         ): CallbackInterceptor<T> {
-            // Format the body for better readability
-            val formattedBody = BodyFormatter.format(body)
-            
-            val requestId = NetworkInspector.onRequestStart(
-                url = url,
-                method = method,
-                params = params,
-                headers = headers,
-                body = formattedBody,
-                tag = tag
-            )
-            
-            return CallbackInterceptor(requestId)
+            return try {
+                val formattedBody = BodyFormatter.format(body)
+                
+                val requestId = NetworkInspector.onRequestStart(
+                    url = url,
+                    method = method,
+                    params = params,
+                    headers = headers,
+                    body = formattedBody,
+                    tag = tag
+                )
+                
+                CallbackInterceptor(requestId)
+            } catch (e: Throwable) {
+                Log.e(TAG, "Error creating interceptor", e)
+                CallbackInterceptor("")
+            }
         }
         
-        /**
-         * Create interceptor from a builder for more options
-         */
         @JvmStatic
         fun <T> builder(): Builder<T> = Builder()
     }
     
-    /**
-     * Builder for creating CallbackInterceptor with fluent API
-     */
+    @JvmOverloads
+    fun onSuccess(
+        responseCode: Int = 200,
+        response: T? = null,
+        headers: Map<String, String>? = null
+    ) {
+        try {
+            NetworkInspector.onRequestSuccess(requestId, responseCode, response, headers)
+        } catch (e: Throwable) {
+            Log.e(TAG, "Error in onSuccess", e)
+        }
+    }
+    
+    @JvmOverloads
+    fun onFailure(
+        responseCode: Int = 0,
+        error: Any? = null
+    ) {
+        try {
+            NetworkInspector.onRequestFailed(requestId, responseCode, error)
+        } catch (e: Throwable) {
+            Log.e(TAG, "Error in onFailure", e)
+        }
+    }
+    
+    fun onCancelled() {
+        try {
+            NetworkInspector.onRequestCancelled(requestId)
+        } catch (e: Throwable) {
+            Log.e(TAG, "Error in onCancelled", e)
+        }
+    }
+    
+    fun getRequestId(): String = requestId
+    
     class Builder<T> {
         private var url: String = ""
         private var method: String = "GET"
@@ -171,31 +110,30 @@ class CallbackInterceptor<T> private constructor(
         fun body(body: Any?) = apply { this.body = body }
         fun tag(tag: String) = apply { this.tag = tag }
         
-        /**
-         * Build the interceptor and start tracking
-         */
         fun build(): CallbackInterceptor<T> {
-            val fullUrl = when {
-                url.startsWith("http") -> url
-                baseUrl != null -> baseUrl + url
-                else -> url
+            return try {
+                val fullUrl = when {
+                    url.startsWith("http") -> url
+                    baseUrl != null -> baseUrl + url
+                    else -> url
+                }
+                
+                create(
+                    url = fullUrl,
+                    method = method,
+                    params = params,
+                    headers = headers,
+                    body = body,
+                    tag = tag
+                )
+            } catch (e: Throwable) {
+                Log.e(TAG, "Error building interceptor", e)
+                CallbackInterceptor("")
             }
-            
-            return create(
-                url = fullUrl,
-                method = method,
-                params = params,
-                headers = headers,
-                body = body,
-                tag = tag
-            )
         }
     }
 }
 
-/**
- * Extension function to wrap any callback with NetworkInspector tracking
- */
 inline fun <T> trackRequest(
     url: String,
     method: String = "GET",
@@ -208,15 +146,18 @@ inline fun <T> trackRequest(
     val interceptor = CallbackInterceptor.create<T>(url, method, params, headers, body)
     
     val successCallback: (Int, T?, Map<String, String>?) -> Unit = { code, response, respHeaders ->
-        interceptor.onSuccess(code, response, respHeaders)
+        try {
+            interceptor.onSuccess(code, response, respHeaders)
+        } catch (e: Throwable) { }
         onSuccess(code, response)
     }
     
     val failureCallback: (Int, Any?) -> Unit = { code, error ->
-        interceptor.onFailure(code, error)
+        try {
+            interceptor.onFailure(code, error)
+        } catch (e: Throwable) { }
         onFailure(code, error)
     }
     
     return Pair(successCallback, failureCallback)
 }
-
